@@ -10,7 +10,7 @@ const generateToken = (id, role) => {
 }
 
 const addTeamMember = async (req, res) => {
-    const { fullName, role, phoneNumber, email, password } = req.body;
+    const { fullName, role, phoneNumber, email, password, notes } = req.body;
     try {
         if (!fullName || !role || !phoneNumber || !email || !password)
             throw Error("Tous les champs doivent être renseignés");
@@ -42,6 +42,7 @@ const addTeamMember = async (req, res) => {
             phoneNumber,
             email,
             password: hashedPassword,
+            notes
         });
 
         const firebaseUser = await createUserWithEmailAndPassword(auth, email, password);
@@ -205,7 +206,7 @@ const updateTeamMember = async (req, res) => {
             email,
             password,
             dateOfBirth,
-            fullAddress,
+            fullAddress: JSON.parse(fullAddress),
             instagram,
             picture,
             siret,

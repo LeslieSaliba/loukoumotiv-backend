@@ -6,7 +6,7 @@ const teamSchema = new mongoose.Schema({
     phoneNumber: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    dateOfBirth: { type: Date },
+    dateOfBirth: { type: String },
     fullAddress: {
         number: { type: String },
         street: { type: String },
@@ -17,7 +17,7 @@ const teamSchema = new mongoose.Schema({
     picture: { type: String },
     siret: { type: String },
     IBAN: { type: String},
-    joiningDate: { type: Date },
+    joiningDate: { type: String },
     drivingLicense: { type: Boolean },
     motorized: { type: Boolean },
     notes: { type: String }

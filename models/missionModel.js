@@ -13,16 +13,16 @@ const missionSchema = new mongoose.Schema({
     },
     type: { type: String, required: true, enum: ['event', 'corporate', 'social'] },
     time: {
-        date: { type: Date, required: true },
-        hours: { type: Object, required: true },
+        date: { type: String, required: true },
+        hours: { type: [String], required: true },
     },
     capacity: { type: String, required: true },
     requiredMembers: { type: Number, required: true },
     registeredMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: "team" }],
     remuneration: { type: String, required: true },
-    status: { type: String, required: true, enum: ['done', 'to do', 'cancelled'], default: 'to do' },
-    teamBilling: { type: String, required: true, enum: ['done', 'in progress', 'to do'], default: 'to do' },
-    partnerBilling: { type: String, required: true, enum: ['done', 'in progress', 'to do'], default: 'to do' },
+    status: { type: String, enum: ['done', 'to do', 'cancelled'], default: 'to do' },
+    teamBilling: { type: String, enum: ['done', 'in progress', 'to do'], default: 'to do' },
+    partnerBilling: { type: String, enum: ['done', 'in progress', 'to do'], default: 'to do' },
     notes: { type: String },
 }, { timestamps: true })
 

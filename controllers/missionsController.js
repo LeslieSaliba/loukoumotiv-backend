@@ -32,22 +32,48 @@ const getMission = async (req, res) => {
     const { Id } = req.params;
     try {
         if (!Id) throw Error("Pas d'id renseigné");
-        const mission = await Mission.findById({ _id: Id });
+
+        const mission = await Mission.findById({ _id: Id })
+        .populate({
+            path: 'partner',
+            model: 'partners',
+            select: 'name',
+        })
+        .populate({
+            path: 'registeredMembers',
+            model: 'team',
+            select: 'fullName',
+        });
+
         if (!mission) throw Error("Erreur lors de l'affichage de la mission");
+
         res.status(200).json({ message: "Données de la mission récupérées avec succès", mission });
     } catch (error) {
         res.status(500).json({ message: "Erreur lors de l'affichage de la mission", error: error.message });
     }
-}
+};
+
 
 const getAllMissions = async (_, res) => {
     try {
-        const missions = await Mission.find({});
-        res.status(200).json({ message: "Données des missions récupérées avec succès", missions });
+        const missions = await Mission.find({})
+            .populate({
+                path: 'partner',
+                model: 'partners',
+                select: 'name',
+            })
+            .populate({
+                path: 'registeredMembers',
+                model: 'team',
+                select: 'fullName',
+            });
+
+        res.status(200).json({ message: 'Données des missions récupérées avec succès', missions });
     } catch (error) {
-        res.status(500).json({ message: `Erreur lors de l'affichage des données des missions`, error: error.message })
+        res.status(500).json({ message: `Erreur lors de l'affichage des données des missions`, error: error.message });
     }
-}
+};
+
 
 const deleteMission = async (req, res) => {
     const { Id } = req.params;
@@ -204,7 +230,7 @@ const registerToMission = async (req, res) => {
         const updatedMission = await getMissionById(missionId);
         res.status(200).json({
             message: `Membre d'équipe inscrit avec succès à la mission "${mission.title}"`,
-            mission: updatedMission, 
+            mission: updatedMission,
             missionId
         });
     } catch (error) {
@@ -230,12 +256,36 @@ const dropMission = async (req, res) => {
         const updatedMission = await getMissionById(missionId);
         res.status(200).json({
             message: `Membre d'équipe retiré avec succès de la mission "${mission.title}"`,
-            mission: updatedMission, 
+            mission: updatedMission,
             missionId
         });
     } catch (error) {
         res.status(500).json({
             message: `Erreur lors du retrait du membre d'équipe de la mission`,
+            error: error.message
+        });
+    }
+};
+
+const getMissionsByTeamMember = async (req, res) => {
+    const { teamMemberId } = req.params;
+    try {
+        if (!teamMemberId) throw Error("Pas d'ID de membre d'équipe renseigné");
+
+        const missions = await Mission.find({ registeredMembers: teamMemberId })
+            .populate({
+                path: 'partner',
+                model: 'partners',
+                select: 'name',
+            });
+
+        res.status(200).json({
+            message: `Données des missions où le membre d'équipe est inscrit récupérées avec succès`,
+            missions
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: `Erreur lors de la récupération des missions du membre d'équipe`,
             error: error.message
         });
     }
@@ -250,4 +300,4 @@ const getMissionById = async (Id) => {
     }
 }
 
-module.exports = { addMission, getByType, getMission, getAllMissions, deleteMission, updateMission, getByStatus, getByPartnerBillingStatus, getByTeamBillingStatus, registerToMission, dropMission };
+module.exports = { addMission, getByType, getMission, getAllMissions, deleteMission, updateMission, getByStatus, getByPartnerBillingStatus, getByTeamBillingStatus, registerToMission, dropMission, getMissionsByTeamMember };
