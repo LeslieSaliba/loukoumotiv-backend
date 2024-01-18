@@ -4,8 +4,8 @@ const addPartner = async (req, res) => {
     const { name, type, location, website, referenceContact, notes } = req.body;
     try {
         if (!name || !type || !location || !website || !referenceContact)
-            throw Error("Tous les champs doivent être renseignés");
-
+            throw Error("Les champs * doivent être renseignés");
+            
         // for the reference contact ? 
         // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         // if (!emailRegex.test(email)) {
@@ -72,6 +72,10 @@ const updatePartner = async (req, res) => {
         // if (email && !emailRegex.test(email)) {
         //     throw Error("Format d'email invalide");
         // }
+
+        if (!name || !type || !location || !website || !referenceContact) {
+            throw Error("Les champs * doivent être renseignés");
+        }
 
         const result = await Partner.findByIdAndUpdate({ _id: Id }, {
             name,

@@ -4,6 +4,11 @@ const addContact = async (req, res) => {
     const { fullName, email, phoneNumber, position, companyName, notes } = req.body;
     try {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!fullName || !email || !phoneNumber || !position)
+            throw Error("Les champs * doivent être renseignés");
+
+
         if (!emailRegex.test(email)) {
             throw Error("Format d'email invalide");
         }
@@ -61,11 +66,58 @@ const deleteContact = async (req, res) => {
     }
 }
 
+// const updateContact = async (req, res) => {
+//     const { fullName, email, phoneNumber, position, companyName, notes } = req.body;
+//     const { Id } = req.params;
+//     try {
+//         if (!Id) throw Error("Pas d'id renseigné");
+
+//         if (!fullName || !email || !phoneNumber || !position)
+//             throw Error("Les champs * doivent être renseignés");
+
+//         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//         if (email && !emailRegex.test(email)) {
+//             throw Error("Format d'email invalide");
+//         }
+
+//         const existingEmailContact = await Directory.findOne({ email });
+//         if (existingEmailContact && existingEmailContact._id != Id) {
+//             throw Error("L'email est déjà lié à un autre contact du répertoire");
+//         }
+
+//         const existingPhoneContact = await Directory.findOne({ phoneNumber });
+//         if (existingPhoneContact && existingPhoneContact._id != Id) {
+//             throw Error("Le numéro de téléphone est déjà lié à un autre contact du répertoire");
+//         }
+
+//         const result = await Directory.findByIdAndUpdate({ _id: Id }, {
+//             fullName,
+//             email,
+//             phoneNumber,
+//             position,
+//             companyName,
+//             notes
+//         });
+//         if (!result) throw Error("Erreur lors de la mise à jour du contact");
+
+//         const contact = await getContactById(Id);
+//         res.status(200).json({ message: "Contact mis à jour avec succès", contact, Id });
+//     } catch (error) {
+//         res.status(500).json({ message: "Erreur lors de la mise à jour du contact", error: error.message });
+//     }
+// };
+
 const updateContact = async (req, res) => {
     const { fullName, email, phoneNumber, position, companyName, notes } = req.body;
     const { Id } = req.params;
     try {
-        if (!Id) throw Error("Pas d'id renseigné");
+        if (!Id) {
+            throw Error("Pas d'id renseigné");
+        }
+
+        if (!fullName || !email || !phoneNumber || !position) {
+            throw Error("Les champs * doivent être renseignés");
+        }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (email && !emailRegex.test(email)) {
@@ -73,16 +125,16 @@ const updateContact = async (req, res) => {
         }
 
         const existingEmailContact = await Directory.findOne({ email });
-        if (existingEmailContact && existingEmailContact._id != Id) {
+        if (existingEmailContact && existingEmailContact._id !== Id) {
             throw Error("L'email est déjà lié à un autre contact du répertoire");
         }
 
         const existingPhoneContact = await Directory.findOne({ phoneNumber });
-        if (existingPhoneContact && existingPhoneContact._id != Id) {
+        if (existingPhoneContact && existingPhoneContact._id !== Id) {
             throw Error("Le numéro de téléphone est déjà lié à un autre contact du répertoire");
         }
 
-        const result = await Directory.findByIdAndUpdate({ _id: Id }, {
+        const result = await Directory.findByIdAndUpdate(Id, {
             fullName,
             email,
             phoneNumber,
@@ -90,12 +142,15 @@ const updateContact = async (req, res) => {
             companyName,
             notes
         });
-        if (!result) throw Error("Erreur lors de la mise à jour du contact");
+
+        if (!result) {
+            throw Error("Erreur lors de la mise à jour du contact");
+        }
 
         const contact = await getContactById(Id);
         res.status(200).json({ message: "Contact mis à jour avec succès", contact, Id });
     } catch (error) {
-        res.status(500).json({ message: "Erreur lors de la mise à jour du contact", error: error.message });
+        res.status(500).json({ message: `Erreur lors de la mise à jour du contact: ${error.message}` });
     }
 };
 

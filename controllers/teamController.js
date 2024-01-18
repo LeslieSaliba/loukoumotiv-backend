@@ -13,7 +13,7 @@ const addTeamMember = async (req, res) => {
     const { fullName, role, phoneNumber, email, password, notes } = req.body;
     try {
         if (!fullName || !role || !phoneNumber || !email || !password)
-            throw Error("Tous les champs doivent être renseignés");
+            throw Error("Les champs * doivent être renseignés");
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -30,6 +30,10 @@ const addTeamMember = async (req, res) => {
 
         const existNumber = await Team.findOne({ phoneNumber });
         if (existNumber) throw Error("Numéro de téléphone déjà lié à un autre compte");
+
+        if (!fullName || !role || !email || !phoneNumber || !password) {
+            throw Error("Les champs * doivent être renseignés");
+        }
 
         const auth = getAuth();
 
@@ -56,31 +60,6 @@ const addTeamMember = async (req, res) => {
         res.status(500).json({ message: "Erreur lors de l'ajout du nouveau membre", error: error.message });
     }
 };
-
-// const login = async (req, res) => {
-//     const { email, password } = req.body;
-//     try {
-//         if (!email || !password) throw Error("Renseignez email et mot de passe");
-//         const exist = await Team.findOne({ email });
-//         if (!exist) throw Error("Pas de compte relié à cet email");
-//         const comparing = await bcrypt.compare(password, exist.password);
-//         if (!comparing) throw Error("Mot de passe incorrect");
-
-//         const auth = getAuth();
-//         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-//         if (!userCredential.user.emailVerified) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: `Nous vous avons un envoyé un mail de vérification (il est peut-être dans vos spams). Cliquez dessus pour initialiser votre compte et vous connecter !`,
-//             });
-//         }
-
-//         const token = generateToken(exist._id, exist.role);
-//         res.status(200).json({ message: "Connexion réussie", token, id: exist._id });
-//     } catch (error) {
-//         res.status(500).json({ message: `Erreur de connexion avec le mail ${email}`, error: error.message })
-//     }
-// }
 
 const login = async (req, res) => {
     const { email, password } = req.body;
@@ -170,7 +149,7 @@ const updateTeamMember = async (req, res) => {
     const file = req.file;
     let picture;
 
-    const { fullName, phoneNumber, email, password, dateOfBirth, fullAddress, instagram, siret, IBAN, joiningDate, drivingLicense, motorized, notes } = req.body;
+    const { fullName, phoneNumber, email, password, role, dateOfBirth, ZIPcode, street, number, city, instagram, siret, IBAN, joiningDate, drivingLicense, motorized, notes } = req.body;
     const { Id } = req.params;
     try {
         if (!Id) throw Error("Pas d'id renseigné");
@@ -178,6 +157,11 @@ const updateTeamMember = async (req, res) => {
         if (file) {
             const imageUploadResult = await FileUpload(file);
             picture = imageUploadResult.downloadURL;
+        }
+
+        // if (fullName === "" || role === "" || email === "" || phoneNumber === "" || password === "") {
+        if (!fullName || !role || !email || !phoneNumber || !password) {
+            throw Error("Les champs * doivent être renseignés");
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -199,14 +183,19 @@ const updateTeamMember = async (req, res) => {
         if (existingPhoneMember && existingPhoneMember._id != Id) {
             throw Error("Le numéro de téléphone est déjà lié à un autre compte");
         }
-
         const result = await Team.findByIdAndUpdate({ _id: Id }, {
             fullName,
             phoneNumber,
             email,
             password,
             dateOfBirth,
-            fullAddress: JSON.parse(fullAddress),
+            role,
+            fullAddress: {
+                city,
+                number,
+                street,
+                ZIPcode
+            },
             instagram,
             picture,
             siret,

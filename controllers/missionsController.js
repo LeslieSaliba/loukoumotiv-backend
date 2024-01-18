@@ -3,8 +3,8 @@ const Mission = require('../models/missionModel');
 const addMission = async (req, res) => {
     const { title, description, partner, location, type, time, capacity, requiredMembers, registeredMembers, remuneration, status, teamBilling, partnerBilling, notes } = req.body;
     try {
-        if (!title || !description || !partner || !location || !type || !time || !capacity || !requiredMembers || !remuneration || !status || !teamBilling || !partnerBilling)
-            throw Error("Tous les champs doivent être renseignés");
+        if (!title || !description || !partner || !location || !type || !time || !capacity || !requiredMembers || !remuneration)
+            throw Error("Les champs * doivent être renseignés");
 
         const mission = await Mission.create({
             title,
@@ -34,16 +34,16 @@ const getMission = async (req, res) => {
         if (!Id) throw Error("Pas d'id renseigné");
 
         const mission = await Mission.findById({ _id: Id })
-        .populate({
-            path: 'partner',
-            model: 'partners',
-            select: 'name',
-        })
-        .populate({
-            path: 'registeredMembers',
-            model: 'team',
-            select: 'fullName',
-        });
+            .populate({
+                path: 'partner',
+                model: 'partners',
+                select: 'name',
+            })
+            .populate({
+                path: 'registeredMembers',
+                model: 'team',
+                select: 'fullName',
+            });
 
         if (!mission) throw Error("Erreur lors de l'affichage de la mission");
 
@@ -52,7 +52,6 @@ const getMission = async (req, res) => {
         res.status(500).json({ message: "Erreur lors de l'affichage de la mission", error: error.message });
     }
 };
-
 
 const getAllMissions = async (_, res) => {
     try {
@@ -74,7 +73,6 @@ const getAllMissions = async (_, res) => {
     }
 };
 
-
 const deleteMission = async (req, res) => {
     const { Id } = req.params;
     try {
@@ -93,6 +91,9 @@ const updateMission = async (req, res) => {
     const { Id } = req.params;
     try {
         if (!Id) throw Error("Pas d'id renseigné");
+
+        if (!title || !description || !partner || !location || !type || !time || !capacity || !requiredMembers || !remuneration)
+            throw Error("Les champs * doivent être renseignés");
 
         const result = await Mission.findByIdAndUpdate({ _id: Id }, {
             title,
