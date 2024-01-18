@@ -15,6 +15,6 @@ router.post('/getByPartnerBillingStatus', getByPartnerBillingStatus);
 router.post('/getByTeamBillingStatus', getByTeamBillingStatus);
 router.delete('/delete/:Id', deleteMission);
 router.put('/update/:Id', updateMission);
-router.get('/getMissionsByTeamMember/:Id', getMissionsByTeamMember);
+router.get('/getMissionsByTeamMember/:teamMemberId', getMissionsByTeamMember);
 
 module.exports = router;

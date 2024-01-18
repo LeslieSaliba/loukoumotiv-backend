@@ -213,6 +213,7 @@ const getByTeamBillingStatus = async (req, res) => {
 };
 
 const registerToMission = async (req, res) => {
+
     const { missionId, teamMemberId } = req.body;
     try {
         if (!missionId || !teamMemberId) throw Error("Pas d'ID de mission ou d'ID de membre d'équipe renseigné");
@@ -226,6 +227,7 @@ const registerToMission = async (req, res) => {
         }
 
         mission.registeredMembers.push(teamMemberId);
+
         await mission.save();
         const updatedMission = await getMissionById(missionId);
         res.status(200).json({
@@ -273,12 +275,6 @@ const getMissionsByTeamMember = async (req, res) => {
         if (!teamMemberId) throw Error("Pas d'ID de membre d'équipe renseigné");
 
         const missions = await Mission.find({ registeredMembers: teamMemberId })
-            .populate({
-                path: 'partner',
-                model: 'partners',
-                select: 'name',
-            });
-
         res.status(200).json({
             message: `Données des missions où le membre d'équipe est inscrit récupérées avec succès`,
             missions
