@@ -124,16 +124,21 @@ const updateContact = async (req, res) => {
             throw Error("Format d'email invalide");
         }
 
-        const existingEmailContact = await Directory.findOne({ email });
-        if (existingEmailContact && existingEmailContact._id !== Id) {
-            throw Error("L'email est déjà lié à un autre contact du répertoire");
+        const ContactToUpdate = await Directory.findById(Id); 
+        if(ContactToUpdate.email !== email){
+            const existingEmailContact = await Directory.findOne({ email });
+            if (existingEmailContact && existingEmailContact._id !== Id) {
+                throw Error("L'email est déjà lié à un autre contact du répertoire");
+            }
         }
 
-        const existingPhoneContact = await Directory.findOne({ phoneNumber });
-        if (existingPhoneContact && existingPhoneContact._id !== Id) {
-            throw Error("Le numéro de téléphone est déjà lié à un autre contact du répertoire");
+        if(ContactToUpdate.phoneNumber !== phoneNumber){
+            const existingPhoneContact = await Directory.findOne({ phoneNumber });
+            if (existingPhoneContact && existingPhoneContact._id !== Id) {
+                throw Error("Le numéro de téléphone est déjà lié à un autre contact du répertoire");
+            }
         }
-
+        
         const result = await Directory.findByIdAndUpdate(Id, {
             fullName,
             email,

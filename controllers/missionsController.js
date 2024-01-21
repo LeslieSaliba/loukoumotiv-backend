@@ -276,6 +276,11 @@ const getMissionsByTeamMember = async (req, res) => {
         if (!teamMemberId) throw Error("Pas d'ID de membre d'équipe renseigné");
 
         const missions = await Mission.find({ registeredMembers: teamMemberId })
+        .populate({
+            path: 'partner',
+            model: 'partners',
+            select: 'name',
+        })
         res.status(200).json({
             message: `Données des missions où le membre d'équipe est inscrit récupérées avec succès`,
             missions
