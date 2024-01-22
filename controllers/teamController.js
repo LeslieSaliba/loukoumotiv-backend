@@ -174,15 +174,20 @@ const updateTeamMember = async (req, res) => {
             throw Error("Mot de passe faible. Inclure au moins une majuscule, une minuscule, un chiffre et un symbole.");
         }
 
-        const existingEmailMember = await Team.findOne({ email });
-        if (existingEmailMember && existingEmailMember._id != Id) {
-            throw Error("L'email est déjà lié à un autre compte");
+        const MemberToUpdate = await Team.findById(Id);
+        if (MemberToUpdate.email !== email) {
+            const existingEmailMember = await Team.findOne({ email });
+            if (existingEmailMember && existingEmailMember._id != Id) {
+                throw Error("L'email est déjà lié à un autre compte");
+            }
+        }
+        if (MemberToUpdate.phoneNumber !== phoneNumber) {
+            const existingPhoneMember = await Team.findOne({ phoneNumber });
+            if (existingPhoneMember && existingPhoneMember._id != Id) {
+                throw Error("Le numéro de téléphone est déjà lié à un autre compte");
+            }
         }
 
-        const existingPhoneMember = await Team.findOne({ phoneNumber });
-        if (existingPhoneMember && existingPhoneMember._id != Id) {
-            throw Error("Le numéro de téléphone est déjà lié à un autre compte");
-        }
         const result = await Team.findByIdAndUpdate({ _id: Id }, {
             fullName,
             phoneNumber,
