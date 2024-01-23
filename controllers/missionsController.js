@@ -87,7 +87,7 @@ const deleteMission = async (req, res) => {
 }
 
 const updateMission = async (req, res) => {
-    const { title, description, partner, location, type, time, capacity, requiredMembers, registeredMembers, remuneration, status, teamBilling, partnerBilling, notes } = req.body;
+    const { title, description, partner, location, type, time, capacity, requiredMembers, remuneration, status, teamBilling, partnerBilling, notes } = req.body;
     const { Id } = req.params;
     try {
         if (!Id) throw Error("Pas d'id renseigné");
@@ -104,7 +104,6 @@ const updateMission = async (req, res) => {
             time,
             capacity,
             requiredMembers,
-            registeredMembers,
             remuneration,
             status,
             teamBilling,

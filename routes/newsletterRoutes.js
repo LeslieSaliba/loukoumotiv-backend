@@ -7,6 +7,7 @@ const { isAuthenticated } = require("../middleware/auth");
 router.post('/subscribe', subscribe);
 router.get('/getAll', getAllSubscribed);
 router.get('/getById/:Id', getSubscriber)
-router.delete('/unsubscribe/:Id', unsubscribe);
+
+router.delete('/unsubscribe/:Id', isAuthenticated('admin'), unsubscribe);
 
 module.exports = router;

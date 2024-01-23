@@ -63,6 +63,7 @@ const addTeamMember = async (req, res) => {
 
 const login = async (req, res) => {
     const { email, password } = req.body;
+    // console.log(req.body);
     const ERROR_MESSAGES = {
         MISSING_CREDENTIALS: "Renseignez email et mot de passe",
         ACCOUNT_NOT_FOUND: "Pas de compte relié à cet email",
@@ -86,14 +87,16 @@ const login = async (req, res) => {
             });
         }
 
+        // console.log(exist.password);
         const comparing = await bcrypt.compare(password, exist.password);
+        // console.log(comparing);
         if (!comparing) {
             return res.status(400).json({
                 success: false,
                 message: ERROR_MESSAGES.INCORRECT_PASSWORD,
             });
         }
-
+        // console.log(password);
         const auth = getAuth();
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         if (!userCredential.user.emailVerified) {
@@ -188,33 +191,65 @@ const updateTeamMember = async (req, res) => {
             }
         }
 
-        const result = await Team.findByIdAndUpdate({ _id: Id }, {
-            fullName,
-            phoneNumber,
-            email,
-            password,
-            dateOfBirth,
-            role,
-            // fullAddress: {
-            //     city,
-            //     number,
-            //     street,
-            //     ZIPcode
-            // },
-            number,
-            street,
-            ZIPcode,
-            city,
-            instagram,
-            picture,
-            siret,
-            IBAN,
-            joiningDate,
-            drivingLicense,
-            motorized,
-            notes
-        });
-        if (!result) throw Error("Erreur lors de la mise à jour du membre");
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        if (password) {
+            const result = await Team.findByIdAndUpdate({ _id: Id }, {
+                fullName,
+                phoneNumber,
+                email,
+                password: hashedPassword,
+                dateOfBirth,
+                role,
+                // fullAddress: {
+                //     city,
+                //     number,
+                //     street,
+                //     ZIPcode
+                // },
+                number,
+                street,
+                ZIPcode,
+                city,
+                instagram,
+                picture,
+                siret,
+                IBAN,
+                joiningDate,
+                drivingLicense,
+                motorized,
+                notes
+            });
+            if (!result) throw Error("Erreur lors de la mise à jour du membre");
+        } else{
+            const result = await Team.findByIdAndUpdate({ _id: Id }, {
+                fullName,
+                phoneNumber,
+                email,
+                dateOfBirth,
+                role,
+                // fullAddress: {
+                //     city,
+                //     number,
+                //     street,
+                //     ZIPcode
+                // },
+                number,
+                street,
+                ZIPcode,
+                city,
+                instagram,
+                picture,
+                siret,
+                IBAN,
+                joiningDate,
+                drivingLicense,
+                motorized,
+                notes
+            });
+            if (!result) throw Error("Erreur lors de la mise à jour du membre");
+        }
 
         const teamMember = await getMemberById(Id);
         res.status(200).json({ message: "Membre mis à jour avec succès", teamMember, Id });

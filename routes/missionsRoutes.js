@@ -4,17 +4,19 @@ const router = express.Router();
 const { addMission, getByType, getMission, getAllMissions, deleteMission, updateMission, getByStatus, getByPartnerBillingStatus, getByTeamBillingStatus, registerToMission, dropMission, getMissionsByTeamMember } = require('../controllers/missionsController');
 const { isAuthenticated } = require("../middleware/auth");
 
-router.post('/add', addMission);
-router.put('/register', registerToMission);
-router.put('/drop', dropMission);
 router.get('/getAll', getAllMissions);
 router.get('/getById/:Id', getMission);
 router.post('/getByType', getByType);
 router.post('/getByStatus', getByStatus);
 router.post('/getByPartnerBillingStatus', getByPartnerBillingStatus);
 router.post('/getByTeamBillingStatus', getByTeamBillingStatus);
-router.delete('/delete/:Id', deleteMission);
-router.put('/update/:Id', updateMission);
 router.get('/getMissionsByTeamMember/:teamMemberId', getMissionsByTeamMember);
+
+router.put('/register', isAuthenticated(['admin', 'masseur']), registerToMission);
+
+router.put('/update/:Id', isAuthenticated('admin'), updateMission);
+router.post('/add', isAuthenticated('admin'), addMission);
+router.put('/drop', isAuthenticated('admin'), dropMission);
+router.delete('/delete/:Id', isAuthenticated('admin'), deleteMission);
 
 module.exports = router;

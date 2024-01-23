@@ -9,12 +9,13 @@ const { isAuthenticated } = require("../middleware/auth");
 router.post('/login', login);
 router.get('/getById/:Id', getTeamMember);
 router.get('/getAll', getAllMembers);
-router.put('/update/:Id', upload.single('picture'), updateTeamMember);
 router.post('/getByRole', getByRole);
 
-router.post('/add', addTeamMember);
-router.delete('/delete/:Id', deleteTeamMember);
-router.put('/switchToMasseur/:Id', switchToMasseur);
-router.put('/switchToAdmin/:Id', switchToAdmin);
+router.put('/update/:Id', upload.single('picture'), isAuthenticated(['admin', 'masseur']), updateTeamMember);
+
+router.post('/add', isAuthenticated('admin'), addTeamMember);
+router.delete('/delete/:Id', isAuthenticated('admin'), deleteTeamMember);
+router.put('/switchToMasseur/:Id', isAuthenticated('admin'), switchToMasseur);
+router.put('/switchToAdmin/:Id', isAuthenticated('admin'), switchToAdmin);
 
 module.exports = router;
