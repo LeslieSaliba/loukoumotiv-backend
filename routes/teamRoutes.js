@@ -9,7 +9,7 @@ const { isAuthenticated } = require("../middleware/auth");
 router.post('/login', login);
 router.get('/getById/:Id', getTeamMember);
 router.get('/getAll', getAllMembers);
-router.put('/update/:Id', upload.single('file'), updateTeamMember);
+router.put('/update/:Id', upload.single('picture'), updateTeamMember);
 router.post('/getByRole', getByRole);
 
 router.post('/add', addTeamMember);

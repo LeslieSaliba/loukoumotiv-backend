@@ -195,12 +195,16 @@ const updateTeamMember = async (req, res) => {
             password,
             dateOfBirth,
             role,
-            fullAddress: {
-                city,
-                number,
-                street,
-                ZIPcode
-            },
+            // fullAddress: {
+            //     city,
+            //     number,
+            //     street,
+            //     ZIPcode
+            // },
+            number,
+            street,
+            ZIPcode,
+            city,
             instagram,
             picture,
             siret,
