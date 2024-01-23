@@ -163,9 +163,9 @@ const updateTeamMember = async (req, res) => {
         }
 
         // if (fullName === "" || role === "" || email === "" || phoneNumber === "" || password === "") {
-        if (!fullName || !role || !email || !phoneNumber || !password) {
-            throw Error("Les champs * doivent être renseignés");
-        }
+        // if (!fullName || !role || !email || !phoneNumber || !password) {
+        //     throw Error("Les champs * doivent être renseignés");
+        // }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (email && !emailRegex.test(email)) {
