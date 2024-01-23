@@ -15,7 +15,7 @@ const isAuthenticated = (role) => {
         if (!token) return res.status(400).json({ message: "Pas de token renseigné" });
         try {
             const credentials = jwt.verify(token, process.env.SECRET_KEY);
-            if (credentials.role !== role) throw Error("Vous n'êtes pas autorisé à compléter cette action.");
+            if (credentials.role !== role) throw Error("Vous n'êtes pas autorisé.e à compléter cette action.");
             const exist = await Team.findById({ _id: credentials.id });
             if (!exist) throw Error("Membre introuvable");
             next();

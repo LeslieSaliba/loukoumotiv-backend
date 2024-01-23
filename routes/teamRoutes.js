@@ -10,8 +10,7 @@ router.post('/login', login);
 router.get('/getById/:Id', getTeamMember);
 router.get('/getAll', getAllMembers);
 router.post('/getByRole', getByRole);
-
-router.put('/update/:Id', upload.single('picture'), isAuthenticated(['admin', 'masseur']), updateTeamMember);
+router.put('/update/:Id', upload.single('picture'), updateTeamMember);
 
 router.post('/add', isAuthenticated('admin'), addTeamMember);
 router.delete('/delete/:Id', isAuthenticated('admin'), deleteTeamMember);

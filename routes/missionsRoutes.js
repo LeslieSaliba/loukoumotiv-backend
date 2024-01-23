@@ -11,8 +11,7 @@ router.post('/getByStatus', getByStatus);
 router.post('/getByPartnerBillingStatus', getByPartnerBillingStatus);
 router.post('/getByTeamBillingStatus', getByTeamBillingStatus);
 router.get('/getMissionsByTeamMember/:teamMemberId', getMissionsByTeamMember);
-
-router.put('/register', isAuthenticated(['admin', 'masseur']), registerToMission);
+router.put('/register', registerToMission);
 
 router.put('/update/:Id', isAuthenticated('admin'), updateMission);
 router.post('/add', isAuthenticated('admin'), addMission);
